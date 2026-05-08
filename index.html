@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Lato:wght@300;400&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --rose: #e8405a;
+    --blush: #ffb3c1;
+    --deep: #1a0510;
+    --gold: #f9c74f;
+    --cream: #fff5f7;
+    --pink-soft: #ffd6e0;
+  }
+
+  body {
+    background: var(--deep);
+    font-family: 'Lato', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* Animated background */
+  .bg {
+    position: fixed; inset: 0; z-index: 0;
+    background: radial-gradient(ellipse at 20% 50%, #3d0a1e 0%, #1a0510 60%),
+                radial-gradient(ellipse at 80% 20%, #2a0a1a 0%, transparent 60%);
+  }
+
+  .stars {
+    position: fixed; inset: 0; z-index: 1;
+    overflow: hidden;
+  }
+
+  .star {
+    position: absolute;
+    background: #fff;
+    border-radius: 50%;
+    animation: twinkle var(--dur, 3s) ease-in-out infinite;
+    animation-delay: var(--del, 0s);
+    opacity: 0;
+  }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0; transform: scale(0.8); }
+    50% { opacity: var(--op, 0.8); transform: scale(1.2); }
+  }
+
+  /* Floating hearts */
+  .hearts-bg {
+    position: fixed; inset: 0; z-index: 1;
+    pointer-events: none; overflow: hidden;
+  }
+
+  .heart-float {
+    position: absolute;
+    bottom: -60px;
+    font-size: var(--fs, 20px);
+    opacity: 0;
+    animation: floatUp var(--dur, 8s) ease-in infinite;
+    animation-delay: var(--del, 0s);
+    left: var(--l, 50%);
+  }
+
+  @keyframes floatUp {
+    0% { opacity: 0; transform: translateY(0) rotate(0deg); }
+    10% { opacity: 0.7; }
+    90% { opacity: 0.3; }
+    100% { opacity: 0; transform: translateY(-110vh) rotate(360deg); }
+  }
+
+  /* Main container */
+  .page {
+    position: relative; z-index: 10;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center;
+    padding: 30px 16px 80px;
+  }
+
+  /* Top ornament */
+  .ornament {
+    font-size: 2.2rem;
+    animation: pulse 2s ease-in-out infinite;
+    margin-bottom: 10px;
+    opacity: 0;
+    animation: fadeSlideDown 1s ease forwards, pulse 2s ease-in-out 1s infinite;
+  }
+
+  @keyframes fadeSlideDown {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+  }
+
+  /* Title */
+  .title {
+    font-family: 'Playfair Display', serif;
+    color: var(--blush);
+    font-size: clamp(1.6rem, 6vw, 2.8rem);
+    text-align: center;
+    line-height: 1.3;
+    opacity: 0;
+    animation: fadeSlideDown 1s ease 0.3s forwards;
+  }
+
+  .title span {
+    color: var(--gold);
+    font-style: italic;
+  }
+
+  .subtitle {
+    font-family: 'Lato', sans-serif;
+    color: #c9849a;
+    font-size: clamp(0.75rem, 3vw, 0.95rem);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 6px;
+    opacity: 0;
+    animation: fadeSlideDown 1s ease 0.5s forwards;
+  }
+
+  /* Date badge */
+  .date-badge {
+    margin-top: 20px;
+    background: linear-gradient(135deg, rgba(232,64,90,0.2), rgba(249,199,79,0.1));
+    border: 1px solid rgba(232,64,90,0.4);
+    border-radius: 50px;
+    padding: 8px 22px;
+    color: var(--blush);
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    opacity: 0;
+    animation: fadeSlideDown 1s ease 0.7s forwards;
+  }
+
+  /* Countdown */
+  .countdown-wrap {
+    margin-top: 28px;
+    width: 100%;
+    max-width: 420px;
+    opacity: 0;
+    animation: fadeSlideDown 1s ease 0.9s forwards;
+  }
+
+  .countdown-label {
+    text-align: center;
+    color: #c9849a;
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .countdown-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+
+  .count-box {
+    background: linear-gradient(145deg, rgba(255,179,193,0.12), rgba(232,64,90,0.07));
+    border: 1px solid rgba(232,64,90,0.3);
+    border-radius: 16px;
+    padding: 14px 6px 10px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease;
+  }
+
+  .count-box::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(249,199,79,0.5), transparent);
+  }
+
+  .count-box:hover { transform: translateY(-4px); }
+
+  .count-num {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 8vw, 2.6rem);
+    color: #fff;
+    font-weight: 700;
+    line-height: 1;
+    text-shadow: 0 0 20px rgba(232,64,90,0.6);
+    transition: all 0.3s ease;
+  }
+
+  .count-unit {
+    font-size: 0.62rem;
+    color: var(--blush);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 4px;
+    display: block;
+  }
+
+  .count-num.flip {
+    animation: flipNum 0.4s ease;
+  }
+
+  @keyframes flipNum {
+    0% { transform: rotateX(0); opacity: 1; }
+    50% { transform: rotateX(-90deg); opacity: 0; }
+    51% { transform: rotateX(90deg); opacity: 0; }
+    100% { transform: rotateX(0); opacity: 1; }
+  }
+
+  /* Divider */
+  .divider {
+    margin: 26px auto;
+    display: flex; align-items: center; gap: 12px;
+    width: 100%; max-width: 340px;
+    opacity: 0;
+    animation: fadeSlideDown 1s ease 1.2s forwards;
+  }
+
+  .divider-line { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, rgba(232,64,90,0.4), transparent); }
+  .divider-heart { color: var(--rose); font-size: 1rem; animation: pulse 2s ease-in-out infinite; }
+
+  /* Quotes */
+  .quotes-section {
+    width: 100%; max-width: 420px;
+    display: flex; flex-direction: column; gap: 14px;
+    opacity: 0;
+    animation: fadeSlideDown 1s ease 1.4s forwards;
+  }
+
+  .quote-card {
+    background: linear-gradient(135deg, rgba(255,179,193,0.08), rgba(232,64,90,0.05));
+    border: 1px solid rgba(255,179,193,0.2);
+    border-radius: 18px;
+    padding: 18px 20px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .quote-card::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(249,199,79,0.04), transparent);
+    pointer-events: none;
+  }
+
+  .quote-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(232,64,90,0.2);
+  }
+
+  .quote-icon {
+    font-size: 1.8rem;
+    position: absolute; top: 12px; right: 14px;
+    opacity: 0.5;
+  }
+
+  .quote-text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: var(--cream);
+    font-size: clamp(0.9rem, 3.5vw, 1.05rem);
+    line-height: 1.7;
+    padding-right: 30px;
+  }
+
+  .quote-text em {
+    color: var(--gold);
+    font-style: normal;
+    font-weight: 700;
+  }
+
+  /* Main message */
+  .main-msg {
+    margin-top: 10px;
+    width: 100%; max-width: 420px;
+    opacity: 0;
+    animation: fadeSlideDown 1s ease 1.6s forwards;
+  }
+
+  .main-msg-inner {
+    background: linear-gradient(135deg, rgba(232,64,90,0.18), rgba(249,199,79,0.08));
+    border: 1px solid rgba(232,64,90,0.35);
+    border-radius: 20px;
+    padding: 22px 22px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .main-msg-inner::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--rose), var(--gold), var(--rose));
+    background-size: 200% 100%;
+    animation: shimmer 3s linear infinite;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  .main-msg-text {
+    font-family: 'Playfair Display', serif;
+    color: #fff;
+    font-size: clamp(1rem, 4vw, 1.15rem);
+    line-height: 1.8;
+  }
+
+  .main-msg-text strong {
+    color: var(--gold);
+    font-style: italic;
+  }
+
+  /* Petals row */
+  .petals {
+    margin-top: 22px;
+    font-size: 1.4rem;
+    letter-spacing: 6px;
+    opacity: 0;
+    animation: fadeSlideDown 1s ease 1.8s forwards;
+  }
+
+  /* Kannama name */
+  .name-glow {
+    margin-top: 18px;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(2rem, 9vw, 3rem);
+    color: var(--gold);
+    text-align: center;
+    text-shadow: 0 0 30px rgba(249,199,79,0.5), 0 0 60px rgba(249,199,79,0.2);
+    opacity: 0;
+    animation: glowIn 1.5s ease 2s forwards;
+  }
+
+  @keyframes glowIn {
+    from { opacity: 0; transform: scale(0.8); text-shadow: none; }
+    to { opacity: 1; transform: scale(1); text-shadow: 0 0 30px rgba(249,199,79,0.6), 0 0 80px rgba(249,199,79,0.2); }
+  }
+
+  .name-sub {
+    text-align: center;
+    color: #c9849a;
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 4px;
+    opacity: 0;
+    animation: fadeSlideDown 1s ease 2.3s forwards;
+  }
+
+  /* Promise section */
+  .promise {
+    margin-top: 22px;
+    width: 100%; max-width: 420px;
+    opacity: 0;
+    animation: fadeSlideDown 1s ease 2.5s forwards;
+  }
+
+  .promise-inner {
+    border: 1px dashed rgba(249,199,79,0.3);
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .promise-title {
+    font-family: 'Playfair Display', serif;
+    color: var(--gold);
+    font-size: 1rem;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+  }
+
+  .promise-text {
+    color: #e8b4c0;
+    font-size: 0.88rem;
+    line-height: 1.8;
+    font-style: italic;
+  }
+
+  /* Next button */
+  .next-btn-wrap {
+    margin-top: 36px;
+    opacity: 0;
+    animation: fadeSlideDown 1s ease 2.8s forwards;
+  }
+
+  .next-btn {
+    background: linear-gradient(135deg, var(--rose), #c2185b);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 13px 32px;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 8px 30px rgba(232,64,90,0.4);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .next-btn::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+  }
+
+  .next-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 40px rgba(232,64,90,0.55);
+  }
+
+  .next-btn:active { transform: translateY(0); }
+
+  .next-btn-arrow {
+    font-size: 1.1rem;
+    transition: transform 0.3s ease;
+  }
+
+  .next-btn:hover .next-btn-arrow { transform: translateX(5px); }
+
+  /* Bottom tagline */
+  .bottom-tag {
+    margin-top: 20px;
+    color: #7a4a58;
+    font-size: 0.72rem;
+    letter-spacing: 2px;
+    text-align: center;
+    opacity: 0;
+    animation: fadeSlideDown 1s ease 3s forwards;
+  }
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+<div class="stars" id="stars"></div>
+<div class="hearts-bg" id="hearts"></div>
+
+<div class="page">
+
+  <div class="ornament">💖</div>
+  <div class="title">Since the day you came<br>into my <span>world</span></div>
+  <div class="subtitle">Our Journey Together</div>
+
+  <div class="date-badge">🌹 10 April 2026 — Forever</div>
+
+  <div class="countdown-wrap">
+    <div class="countdown-label">Time we've shared together</div>
+    <div class="countdown-grid">
+      <div class="count-box">
+        <div class="count-num" id="days">00</div>
+        <span class="count-unit">Days</span>
+      </div>
+      <div class="count-box">
+        <div class="count-num" id="hours">00</div>
+        <span class="count-unit">Hours</span>
+      </div>
+      <div class="count-box">
+        <div class="count-num" id="mins">00</div>
+        <span class="count-unit">Mins</span>
+      </div>
+      <div class="count-box">
+        <div class="count-num" id="secs">00</div>
+        <span class="count-unit">Secs</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-heart">♥</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="quotes-section">
+    <div class="quote-card">
+      <div class="quote-icon">🌸</div>
+      <div class="quote-text">You brought <em>sunshine</em> into the corners of my life I didn't even know were dark. Thank you for simply existing in my world.</div>
+    </div>
+    <div class="quote-card">
+      <div class="quote-icon">💫</div>
+      <div class="quote-text">Every day with you feels like a gift I never knew I deserved. You have given me a <em>happiness</em> I will carry forever.</div>
+    </div>
+    <div class="quote-card">
+      <div class="quote-icon">🌹</div>
+      <div class="quote-text">Don't ever leave — because the world is <em>so much more beautiful</em> when I can share it with you, Kannama.</div>
+    </div>
+  </div>
+
+  <div class="main-msg">
+    <div class="main-msg-inner">
+      <div class="main-msg-text">
+        You walked into my life on that beautiful April day<br>
+        and everything changed.<br><br>
+        <strong>You are my calm, my joy, my home.</strong><br><br>
+        I want us to be lifelong —<br>
+        through every season, every storm,<br>
+        every quiet and golden moment.
+      </div>
+    </div>
+  </div>
+
+  <div class="petals">🌺 🌸 💗 🌸 🌺</div>
+
+  <div class="name-glow">Kannama</div>
+  <div class="name-sub">My heart, My forever</div>
+
+  <div class="promise">
+    <div class="promise-inner">
+      <div class="promise-title">💌 A Promise</div>
+      <div class="promise-text">
+        "I promise to be here — not just for today,<br>
+        but for all the days that are yet to come.<br>
+        You came into my life like a blessing,<br>
+        and I am never letting that go."
+      </div>
+    </div>
+  </div>
+
+  <div class="next-btn-wrap">
+    <button class="next-btn" id="nextBtn">
+      Next Page
+      <span class="next-btn-arrow">→</span>
+    </button>
+  </div>
+
+  <div class="bottom-tag">Made with ♥ just for you, Kannama</div>
+
+</div>
+
+<script>
+  // Stars
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 80; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2.5 + 0.5;
+    s.style.cssText = `
+      width:${size}px; height:${size}px;
+      top:${Math.random()*100}%;
+      left:${Math.random()*100}%;
+      --dur:${2+Math.random()*4}s;
+      --del:${Math.random()*5}s;
+      --op:${0.3+Math.random()*0.7};
+    `;
+    starsEl.appendChild(s);
+  }
+
+  // Floating hearts
+  const heartsEl = document.getElementById('hearts');
+  const heartChars = ['💕','💗','💖','🌸','✨','💓','💞','🌹'];
+  function spawnHeart() {
+    const h = document.createElement('div');
+    h.className = 'heart-float';
+    h.textContent = heartChars[Math.floor(Math.random()*heartChars.length)];
+    h.style.cssText = `
+      --fs:${12+Math.random()*18}px;
+      --dur:${7+Math.random()*8}s;
+      --del:0s;
+      left:${5+Math.random()*90}%;
+    `;
+    heartsEl.appendChild(h);
+    setTimeout(() => h.remove(), 16000);
+  }
+  for (let i = 0; i < 8; i++) {
+    setTimeout(() => spawnHeart(), i * 1000);
+  }
+  setInterval(spawnHeart, 2000);
+
+  // Countdown
+  const startDate = new Date('2026-04-10T00:00:00');
+  const els = {
+    days: document.getElementById('days'),
+    hours: document.getElementById('hours'),
+    mins: document.getElementById('mins'),
+    secs: document.getElementById('secs'),
+  };
+  let prev = { days: -1, hours: -1, mins: -1, secs: -1 };
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function update() {
+    const now = new Date();
+    const diff = Math.max(0, now - startDate);
+    const totalSecs = Math.floor(diff / 1000);
+    const d = Math.floor(totalSecs / 86400);
+    const h = Math.floor((totalSecs % 86400) / 3600);
+    const m = Math.floor((totalSecs % 3600) / 60);
+    const s = totalSecs % 60;
+
+    const vals = { days: d, hours: h, mins: m, secs: s };
+    for (const key in vals) {
+      const v = vals[key];
+      if (v !== prev[key]) {
+        els[key].textContent = pad(v);
+        els[key].classList.remove('flip');
+        void els[key].offsetWidth;
+        els[key].classList.add('flip');
+        prev[key] = v;
+      }
+    }
+  }
+
+  update();
+  setInterval(update, 1000);
+
+  // Next button
+  document.getElementById('nextBtn').addEventListener('click', function() {
+    this.textContent = '✨ Loading next page...';
+    // User can wire this to their own page
+    // window.location.href = 'next-page.html';
+    setTimeout(() => {
+      window.location.href='ind.html';
+      this.innerHTML = 'Next Page <span class="next-btn-arrow">→</span>';
+    }, 800);
+  });
+</script>
+</body>
+</html>

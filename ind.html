@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Bunny 💕</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Dancing+Script:wght@600;700&family=Great+Vibes&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#0a0008;font-family:'Cormorant Garamond',serif}
+
+/* ── CANVAS BG ── */
+#bgCanvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* ── ROSE PETALS ── */
+.petal-container{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.petal{position:absolute;top:-60px;font-size:1.2rem;animation:petalFall linear infinite;opacity:0}
+@keyframes petalFall{0%{transform:translateY(0) rotate(0deg) translateX(0);opacity:0}5%{opacity:1}95%{opacity:.7}100%{transform:translateY(110vh) rotate(720deg) translateX(60px);opacity:0}}
+
+/* ── FIREFLY LIGHTS ── */
+.firefly{position:fixed;width:4px;height:4px;border-radius:50%;background:#f9c0d0;pointer-events:none;z-index:1;animation:fireflyMove ease-in-out infinite}
+@keyframes fireflyMove{0%,100%{transform:translate(0,0);opacity:.2;box-shadow:0 0 4px #f9c0d0}50%{transform:translate(var(--fx),var(--fy));opacity:1;box-shadow:0 0 12px #f9c0d0,0 0 24px rgba(249,192,208,.5)}}
+
+/* ── FULL SCREEN PAGES ── */
+.page{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:10;transition:opacity .8s ease,transform .8s ease;opacity:0;pointer-events:none;transform:scale(1.05)}
+.page.active{opacity:1;pointer-events:all;transform:scale(1)}
+
+/* ── PAGE 0: INTRO ── */
+#page-intro{background:radial-gradient(ellipse at center,#2a0018 0%,#0a0008 100%)}
+.intro-crown{font-size:4rem;animation:crownFloat 3s ease-in-out infinite;filter:drop-shadow(0 0 30px rgba(240,192,96,.9))}
+@keyframes crownFloat{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-15px) rotate(5deg)}}
+.intro-title{font-family:'Great Vibes',cursive;font-size:clamp(2.5rem,8vw,5rem);background:linear-gradient(135deg,#fde89a,#f0c060,#e8517a,#f9c0d0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:center;margin:16px 0;animation:shimmer 4s linear infinite;background-size:300%}
+@keyframes shimmer{0%{background-position:0%}100%{background-position:300%}}
+.intro-sub{font-family:'Dancing Script',cursive;font-size:1.3rem;color:#f9c0d0;letter-spacing:3px;text-align:center;opacity:.8}
+.start-btn{margin-top:40px;padding:18px 50px;background:linear-gradient(135deg,#e8517a,#c0395a);color:#fff;font-family:'Dancing Script',cursive;font-size:1.5rem;border:none;border-radius:60px;cursor:pointer;box-shadow:0 8px 30px rgba(232,81,122,.6);transition:all .3s cubic-bezier(.34,1.56,.64,1);animation:btnPulse 2s ease-in-out infinite;letter-spacing:1px}
+@keyframes btnPulse{0%,100%{box-shadow:0 8px 30px rgba(232,81,122,.5);transform:scale(1)}50%{box-shadow:0 12px 50px rgba(232,81,122,.9);transform:scale(1.04)}}
+.start-btn:hover{transform:translateY(-5px) scale(1.06)}
+
+/* ── PAGE 1: SYMBOL REVEAL ── */
+#page-symbols{background:radial-gradient(ellipse at 30% 40%,#1e0012 0%,#0a0008 70%)}
+.symbols-instruction{font-family:'Dancing Script',cursive;font-size:1.1rem;color:rgba(249,192,208,.6);letter-spacing:2px;text-align:center;margin-bottom:40px;animation:breathe 3s ease-in-out infinite}
+@keyframes breathe{0%,100%{opacity:.5}50%{opacity:1}}
+.symbols-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:30px;max-width:500px;width:90%}
+.sym-card{width:100%;aspect-ratio:1;background:linear-gradient(145deg,rgba(60,5,40,.8),rgba(20,0,15,.9));border:2px solid rgba(232,81,122,.2);border-radius:28px;display:flex;align-items:center;justify-content:center;flex-direction:column;cursor:pointer;position:relative;overflow:hidden;transition:all .5s cubic-bezier(.34,1.56,.64,1);user-select:none}
+.sym-card.revealed{border-color:rgba(240,192,96,.5);box-shadow:0 0 40px rgba(232,81,122,.3)}
+.sym-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(232,81,122,.15),transparent 70%);opacity:0;transition:opacity .5s}
+.sym-card:hover::before{opacity:1}
+.sym-card:hover{transform:scale(1.05);border-color:rgba(232,81,122,.4)}
+.sym-emoji{font-size:3.5rem;display:block;animation:symFloat ease-in-out infinite;transition:all .4s ease}
+.sym-card:nth-child(1) .sym-emoji{animation-duration:2.8s;animation-delay:0s}
+.sym-card:nth-child(2) .sym-emoji{animation-duration:3.2s;animation-delay:.4s}
+.sym-card:nth-child(3) .sym-emoji{animation-duration:2.6s;animation-delay:.2s}
+.sym-card:nth-child(4) .sym-emoji{animation-duration:3s;animation-delay:.6s}
+@keyframes symFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-8px) scale(1.1)}}
+.sym-word{font-family:'Great Vibes',cursive;font-size:2rem;color:transparent;background:linear-gradient(135deg,#fde89a,#f0c060,#e8517a);-webkit-background-clip:text;background-clip:text;margin-top:10px;opacity:0;transform:translateY(10px);transition:all .5s cubic-bezier(.34,1.56,.64,1);-webkit-text-fill-color:transparent}
+.sym-card.revealed .sym-word{opacity:1;transform:translateY(0)}
+.sym-card.revealed .sym-emoji{transform:scale(1.15);filter:drop-shadow(0 0 20px rgba(232,81,122,.8))}
+
+/* Ripple on click */
+.ripple{position:absolute;border-radius:50%;background:rgba(232,81,122,.4);transform:scale(0);animation:rippleAnim .6s linear forwards;pointer-events:none}
+@keyframes rippleAnim{to{transform:scale(4);opacity:0}}
+
+/* Progress bar */
+.sym-progress{margin-top:30px;display:flex;gap:10px}
+.prog-dot{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.2);border:1px solid rgba(232,81,122,.3);transition:all .4s ease}
+.prog-dot.done{background:var(--rose,#e8517a);box-shadow:0 0 8px rgba(232,81,122,.7);transform:scale(1.2)}
+
+/* ── TRANSITION OVERLAY ── */
+#transitionOverlay{position:fixed;inset:0;z-index:999;background:#0a0008;opacity:0;pointer-events:none;transition:opacity .5s ease}
+#transitionOverlay.fade-in{opacity:1;pointer-events:all}
+
+/* ── NEXT BUTTON ── */
+.next-page-btn{margin-top:30px;padding:14px 38px;background:linear-gradient(135deg,#e8517a,#c0395a);color:#fff;font-family:'Dancing Script',cursive;font-size:1.3rem;border:none;border-radius:50px;cursor:pointer;opacity:0;pointer-events:none;transition:all .5s ease;box-shadow:0 6px 20px rgba(232,81,122,.5);animation:btnPulse 2s ease-in-out infinite}
+.next-page-btn.show{opacity:1;pointer-events:all}
+
+/* ── PARTICLES BURST ── */
+.burst-particle{position:fixed;pointer-events:none;z-index:999;font-size:1.2rem;transition:none;animation:burstOut .8s ease forwards}
+@keyframes burstOut{0%{transform:translate(-50%,-50%) scale(0);opacity:1}100%{transform:translate(var(--bx),var(--by)) scale(1.2);opacity:0}}
+
+/* ── RESPONSIVE ── */
+@media(max-width:500px){.symbols-grid{gap:16px;max-width:340px}.sym-emoji{font-size:2.5rem}.sym-word{font-size:1.5rem}}
+</style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+<div class="petal-container" id="petalContainer"></div>
+<div id="transitionOverlay"></div>
+
+<!-- PAGE 0: INTRO -->
+<div class="page active" id="page-intro">
+  <div class="intro-crown">👑</div>
+  <div class="intro-title">For My Kannama </div>
+  <div class="intro-sub">✦ a message straight from my heart ✦</div>
+  <button class="start-btn" onclick="startJourney()">
+    Open My Heart 💕
+  </button>
+  <!-- romantic quote -->
+  <div style="margin-top:30px;font-family:'Dancing Script',cursive;font-size:1rem;color:rgba(249,192,208,.4);letter-spacing:2px;text-align:center;max-width:300px">
+    "Every heartbeat whispers your name..."
+  </div>
+</div>
+
+<!-- PAGE 1: SYMBOL REVEAL -->
+<div class="page" id="page-symbols">
+  <div class="symbols-instruction">✦ tap each heart to discover the message ✦</div>
+
+  <div class="symbols-grid" id="symbolsGrid">
+
+    <div class="sym-card" id="sym0" onclick="revealSymbol(0,this,event)">
+      <span class="sym-emoji">❤️</span>
+      <span class="sym-word">I</span>
+    </div>
+
+    <div class="sym-card" id="sym1" onclick="revealSymbol(1,this,event)" style="pointer-events:none;opacity:.4">
+      <span class="sym-emoji">💖</span>
+      <span class="sym-word">Love</span>
+    </div>
+
+    <div class="sym-card" id="sym2" onclick="revealSymbol(2,this,event)" style="pointer-events:none;opacity:.4">
+      <span class="sym-emoji">💗</span>
+      <span class="sym-word">You</span>
+    </div>
+
+    <div class="sym-card" id="sym3" onclick="revealSymbol(3,this,event)" style="pointer-events:none;opacity:.4">
+      <span class="sym-emoji">💝</span>
+      <span class="sym-word">Kannama 🐰</span>
+    </div>
+
+  </div>
+
+  <div class="sym-progress" id="symProgress">
+    <div class="prog-dot"></div>
+    <div class="prog-dot"></div>
+    <div class="prog-dot"></div>
+    <div class="prog-dot"></div>
+  </div>
+
+  <button class="next-page-btn" id="nextBtn1" onclick="goToPage2()">
+    💌 Feel My Heart Beat...
+  </button>
+</div>
+
+<script>
+/* ── STARFIELD ── */
+const bgC = document.getElementById('bgCanvas');
+const bgX = bgC.getContext('2d');
+let stars = [];
+function resizeBg(){ bgC.width=window.innerWidth; bgC.height=window.innerHeight; initStars(); }
+function initStars(){ stars=[]; const n=Math.floor(bgC.width*bgC.height/3000); for(let i=0;i<n;i++) stars.push({x:Math.random()*bgC.width,y:Math.random()*bgC.height,r:.3+Math.random()*1.5,a:Math.random(),da:.003+Math.random()*.012,c:Math.random()>.7?'#f0c060':'#f9c0d0'}); }
+function drawStars(){ bgX.clearRect(0,0,bgC.width,bgC.height); stars.forEach(s=>{s.a+=s.da;if(s.a>1||s.a<0)s.da=-s.da;bgX.save();bgX.globalAlpha=Math.abs(Math.sin(s.a))*.8+.1;bgX.fillStyle=s.c;bgX.shadowColor=s.c;bgX.shadowBlur=5;bgX.beginPath();bgX.arc(s.x,s.y,s.r,0,Math.PI*2);bgX.fill();bgX.restore();}); requestAnimationFrame(drawStars); }
+window.addEventListener('resize',resizeBg); resizeBg(); drawStars();
+
+/* ── PETALS ── */
+const petals=['🌸','🌺','🌹','🌷','💮'];
+const pc = document.getElementById('petalContainer');
+function spawnPetal(){ const e=document.createElement('div');e.className='petal';e.textContent=petals[Math.floor(Math.random()*petals.length)];e.style.left=Math.random()*100+'vw';e.style.fontSize=(.8+Math.random()*1.2)+'rem';e.style.animationDuration=(7+Math.random()*8)+'s';e.style.animationDelay=Math.random()*5+'s';pc.appendChild(e);setTimeout(()=>e.remove(),16000); }
+setInterval(spawnPetal,700); for(let i=0;i<12;i++)spawnPetal();
+
+/* ── FIREFLIES ── */
+for(let i=0;i<18;i++){
+  const f=document.createElement('div');f.className='firefly';
+  f.style.left=Math.random()*100+'vw';f.style.top=Math.random()*100+'vh';
+  f.style.setProperty('--fx',(Math.random()*100-50)+'px');f.style.setProperty('--fy',(Math.random()*100-50)+'px');
+  f.style.animationDuration=(3+Math.random()*5)+'s';f.style.animationDelay=Math.random()*5+'s';
+  f.style.background=`hsl(${330+Math.random()*40},80%,${70+Math.random()*20}%)`;
+  document.body.appendChild(f);
+}
+
+/* ── PAGE NAVIGATION ── */
+let currentPage='intro';
+function showPage(id){ document.querySelectorAll('.page').forEach(p=>{p.classList.remove('active');p.style.opacity='0';p.style.pointerEvents='none';}); const pg=document.getElementById(id); pg.classList.add('active'); pg.style.opacity='1'; pg.style.pointerEvents='all'; }
+function fadeTransition(cb){ const ov=document.getElementById('transitionOverlay');ov.classList.add('fade-in');setTimeout(()=>{cb();setTimeout(()=>ov.classList.remove('fade-in'),600);},500); }
+
+function startJourney(){ fadeTransition(()=>{ showPage('page-symbols'); currentPage='symbols'; burstHearts(window.innerWidth/2, window.innerHeight/2); }); }
+
+/* ── SYMBOL REVEAL ── */
+let revealed=0;
+const order=[0,1,2,3];
+const words=['I','Love','You','Bunny 🐰'];
+const sounds=['💫','✨','🌟','⭐'];
+
+function revealSymbol(idx, el, e){
+  if(el.classList.contains('revealed'))return;
+  // ripple
+  const r=document.createElement('div');r.className='ripple';
+  const rect=el.getBoundingClientRect();
+  const size=Math.max(rect.width,rect.height)*2;
+  r.style.cssText=`width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px`;
+  el.appendChild(r);setTimeout(()=>r.remove(),700);
+
+  el.classList.add('revealed');
+  revealed++;
+  document.querySelectorAll('.prog-dot')[idx].classList.add('done');
+
+  // burst particles
+  burstHearts(e.clientX, e.clientY, 10);
+
+  // unlock next
+  if(revealed < 4){
+    const nextEl=document.getElementById('sym'+order[revealed]);
+    nextEl.style.pointerEvents='all';
+    nextEl.style.opacity='1';
+    nextEl.style.transition='opacity .5s ease, transform .5s cubic-bezier(.34,1.56,.64,1)';
+  }
+
+  // All revealed → show button
+  if(revealed===4){
+    setTimeout(()=>{ document.getElementById('nextBtn1').classList.add('show'); fullHeartBurst(); },600);
+  }
+}
+
+function burstHearts(cx,cy,count=8){
+  const em=['💕','💖','💗','🌸','✨','💫','🌟'];
+  for(let i=0;i<count;i++){
+    const el=document.createElement('div');el.className='burst-particle';
+    el.textContent=em[Math.floor(Math.random()*em.length)];
+    const ang=Math.random()*Math.PI*2;const dist=60+Math.random()*100;
+    el.style.cssText=`position:fixed;left:${cx}px;top:${cy}px;pointer-events:none;z-index:999;font-size:${1+Math.random()}rem;`;
+    el.style.setProperty('--bx',Math.cos(ang)*dist+'px');el.style.setProperty('--by',Math.sin(ang)*dist+'px');
+    document.body.appendChild(el);setTimeout(()=>el.remove(),900);
+  }
+}
+
+function fullHeartBurst(){ for(let i=0;i<5;i++) setTimeout(()=>burstHearts(Math.random()*window.innerWidth,Math.random()*window.innerHeight,12),i*200); }
+
+function goToPage2(){ window.location.href='heartb.html'; }
+</script>
+</body>
+</html>
